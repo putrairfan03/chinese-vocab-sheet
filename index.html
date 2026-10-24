@@ -5,18 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chinese Vocab A4 Sheet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-cream: #fbf7ee;
-      --card-bg: #fffdf9;
+      --bg-cream: #fcf9f2;
+      --card-bg: #fffdfa;
       --chinese-red: #8b1e1e;
       --deep-crimson: #5c0f12;
       --gold: #d4a359;
       --gold-dark: #aa7a30;
-      --ink-black: #2b2321;
+      --pinyin-color: #b82828;
+      --meaning-color: #2c3038;
       --grid-line: #f1cfc6;
     }
 
@@ -37,12 +38,12 @@
       min-height: 100vh;
     }
 
-    /* Panel Borang & Kawalan */
+    /* Panel Input & Kawalan */
     .control-panel {
       width: 210mm;
       max-width: 100%;
       background: #252b33;
-      padding: 20px;
+      padding: 18px 20px;
       border-radius: 12px;
       margin-bottom: 24px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
@@ -53,7 +54,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .panel-header h2 {
@@ -110,7 +111,7 @@
     .btn-clear { background: transparent; color: #aaa; border: 1px solid #444; }
     .btn-clear:hover { background: #333; color: #fff; }
 
-    /* Template Halaman A4 */
+    /* Halaman A4 */
     .a4-page {
       width: 210mm;
       height: 297mm;
@@ -125,7 +126,6 @@
       background-size: 16px 16px;
     }
 
-    /* Bingkai Luar */
     .outer-border {
       width: 100%;
       height: 100%;
@@ -147,7 +147,7 @@
     .c-bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
     .c-bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 
-    /* Grid 16 Kotak (4x4) Memenuhi Halaman */
+    /* Grid 16 Kotak (4x4) */
     .vocab-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -157,20 +157,24 @@
       height: 100%;
     }
 
-    /* Kotak Vocab */
+    /* Kad Vocab */
     .vocab-card {
       background: var(--card-bg);
       border: 1.5px solid var(--chinese-red);
       border-radius: 6px;
-      padding: 4px;
+      padding: 10px 8px;
       position: relative;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       box-shadow: 0 1px 3px rgba(139, 30, 30, 0.08);
       overflow: hidden;
+      text-align: center;
     }
 
+    /* Bucu Hiasan Halus */
     .card-decor-corner {
       position: absolute;
       width: 6px;
@@ -178,28 +182,41 @@
       border-color: var(--gold-dark);
       border-style: solid;
       opacity: 0.8;
+      pointer-events: none;
     }
-    .dc-tl { top: 2px; left: 2px; border-width: 1px 0 0 1px; }
-    .dc-tr { top: 2px; right: 2px; border-width: 1px 1px 0 0; }
-    .dc-bl { bottom: 2px; left: 2px; border-width: 0 0 1px 1px; }
-    .dc-br { bottom: 2px; right: 2px; border-width: 0 1px 1px 0; }
+    .dc-tl { top: 3px; left: 3px; border-width: 1px 0 0 1px; }
+    .dc-tr { top: 3px; right: 3px; border-width: 1px 1px 0 0; }
+    .dc-bl { bottom: 3px; left: 3px; border-width: 0 0 1px 1px; }
+    .dc-br { bottom: 3px; right: 3px; border-width: 0 1px 1px 0; }
 
+    .badge-icon {
+      position: absolute;
+      right: 6px;
+      top: 5px;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    /* Kotak Hanzi Dinamik */
     .mizige-container {
       display: flex;
       justify-content: center;
-      gap: 3px;
-      margin-top: 2px;
+      gap: 4px;
+      margin-top: 4px;
+      flex-wrap: nowrap;
     }
 
     .mizige-box {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border: 1px solid var(--chinese-red);
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #fff;
+      flex-shrink: 0;
     }
 
     .mizige-box::before {
@@ -232,56 +249,45 @@
       position: relative;
       z-index: 2;
       font-family: 'Noto Serif SC', serif;
-      font-size: 1.45rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: var(--deep-crimson);
       line-height: 1;
     }
 
+    /* Bahagian Pinyin & Maksud di Tengah */
     .vocab-details {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      padding: 2px 4px;
-    }
-
-    .field-row {
-      display: flex;
-      flex-direction: column;
-      border-bottom: 1px solid #ebd9c5;
-      padding-bottom: 1px;
-    }
-
-    .field-label {
-      font-size: 0.55rem;
-      color: #9c6d3b;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .field-value {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--ink-black);
-      min-height: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      gap: 3px;
     }
 
     .pinyin-text {
-      color: var(--chinese-red);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--pinyin-color);
+      font-size: 0.88rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      min-height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .badge-icon {
-      position: absolute;
-      right: 4px;
-      top: 4px;
-      font-size: 0.85rem;
-      opacity: 0.85;
-      pointer-events: none;
+    .meaning-text {
+      color: var(--meaning-color);
+      font-size: 0.78rem;
+      font-weight: 500;
+      line-height: 1.25;
+      min-height: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+      padding: 0 4px;
     }
 
     /* Format Cetakan A4 */
@@ -307,14 +313,15 @@
 </head>
 <body>
 
+  <!-- Panel Borang Input -->
   <div class="control-panel">
     <div class="panel-header">
-      <h2>Sistem Kosa Kata Bahasa Cina (16 Slot Grid)</h2>
+      <h2>Sistem Kosa Kata Bahasa Cina (16 Slot A4)</h2>
       <div class="stats" id="counter">0 / 16 perkataan dimuatkan</div>
     </div>
     <form id="vocabForm" class="form-grid">
-      <input type="text" id="hanziInput" placeholder="Hanzi (cth: 汉语)" required maxlength="4" />
-      <input type="text" id="pinyinInput" placeholder="Pinyin (cth: hànyǔ)" required />
+      <input type="text" id="hanziInput" placeholder="Hanzi (cth: 习惯 / 学习)" required />
+      <input type="text" id="pinyinInput" placeholder="Pinyin (cth: xíguàn)" required />
       <input type="text" id="meaningInput" placeholder="Maksud (English / Malay)" required />
       <div class="btn-group">
         <button type="submit" class="btn-add">+ Masuk</button>
@@ -324,6 +331,7 @@
     </form>
   </div>
 
+  <!-- Halaman A4 Sedia Cetak -->
   <div class="a4-page">
     <div class="outer-border">
       <div class="corner-motif c-top-left"></div>
@@ -357,31 +365,33 @@
           <span class="badge-icon">${traditionalIcons[i]}</span>
         `;
 
+        // Kotak Hanzi Dinamik Mengikut Jumlah Huruf
         const mizigeContainer = document.createElement('div');
         mizigeContainer.className = 'mizige-container';
-        const hanziChars = item ? item.hanzi.split('') : [];
 
-        for (let j = 0; j < 3; j++) {
-          const char = hanziChars[j] || '';
-          const box = document.createElement('div');
-          box.className = 'mizige-box';
-          if (char) {
+        if (item && item.hanzi) {
+          const chars = item.hanzi.trim().split('');
+          chars.forEach(char => {
+            const box = document.createElement('div');
+            box.className = 'mizige-box';
             box.innerHTML = `<span class="hanzi-char">${char}</span>`;
+            mizigeContainer.appendChild(box);
+          });
+        } else {
+          // Placeholder 2 kotak kosong jika belum ada data dimasukkan
+          for (let j = 0; j < 2; j++) {
+            const emptyBox = document.createElement('div');
+            emptyBox.className = 'mizige-box';
+            mizigeContainer.appendChild(emptyBox);
           }
-          mizigeContainer.appendChild(box);
         }
 
+        // Bahagian Pinyin & Maksud (Tanpa label, berada di center)
         const details = document.createElement('div');
         details.className = 'vocab-details';
         details.innerHTML = `
-          <div class="field-row">
-            <span class="field-label">Pīnyīn</span>
-            <span class="field-value pinyin-text">${item ? item.pinyin : ''}</span>
-          </div>
-          <div class="field-row">
-            <span class="field-label">Meaning</span>
-            <span class="field-value">${item ? item.meaning : ''}</span>
-          </div>
+          <div class="pinyin-text">${item ? item.pinyin : ''}</div>
+          <div class="meaning-text">${item ? item.meaning : ''}</div>
         `;
 
         card.appendChild(mizigeContainer);
@@ -396,7 +406,7 @@
       e.preventDefault();
 
       if (vocabList.length >= TOTAL_SLOTS) {
-        alert('Grid telah penuh (16 perkataan). Klik "Reset" untuk set baharu.');
+        alert('Grid telah penuh (16 perkataan). Sila cetak atau klik "Reset" untuk set baharu.');
         return;
       }
 
@@ -416,13 +426,14 @@
     });
 
     function clearAllVocab() {
-      if (confirm('Padam semua rekod kosa kata?')) {
+      if (confirm('Padam semua rekod kosa kata ini?')) {
         vocabList = [];
         localStorage.removeItem('chineseVocabList');
         renderSheet();
       }
     }
 
+    // Paparkan semasa mula-mula halaman dimuatkan
     renderSheet();
   </script>
 </body>
