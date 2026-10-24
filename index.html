@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chinese Vocab A4 Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-cream: #fbf7ee;
+      --card-bg: #fffdf9;
+      --chinese-red: #8b1e1e;
+      --deep-crimson: #5c0f12;
+      --gold: #d4a359;
+      --gold-dark: #aa7a30;
+      --ink-black: #2b2321;
+      --grid-line: #f1cfc6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #1a1e24;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Panel Borang & Kawalan */
+    .control-panel {
+      width: 210mm;
+      max-width: 100%;
+      background: #252b33;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      color: #fff;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    .stats {
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1.5fr 2fr auto;
+      gap: 10px;
+    }
+
+    input {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #3d4653;
+      background: #171b21;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-add { background: var(--gold); color: #2b2321; }
+    .btn-add:hover { background: #e2b166; }
+    .btn-print { background: #c93434; color: #fff; }
+    .btn-print:hover { background: #e04343; }
+    .btn-clear { background: transparent; color: #aaa; border: 1px solid #444; }
+    .btn-clear:hover { background: #333; color: #fff; }
+
+    /* Template Halaman A4 */
+    .a4-page {
+      width: 210mm;
+      height: 297mm;
+      background-color: var(--bg-cream);
+      padding: 8mm;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-image: radial-gradient(#ecd5b5 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+
+    /* Bingkai Luar */
+    .outer-border {
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--chinese-red);
+      padding: 4mm;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .corner-motif {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border: 2.5px solid var(--chinese-red);
+    }
+    .c-top-left { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+    .c-top-right { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+    .c-bottom-left { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+    .c-bottom-right { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+    /* Grid 16 Kotak (4x4) Memenuhi Halaman */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 3.5mm;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Kotak Vocab */
+    .vocab-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--chinese-red);
+      border-radius: 6px;
+      padding: 4px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(139, 30, 30, 0.08);
+      overflow: hidden;
+    }
+
+    .card-decor-corner {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-color: var(--gold-dark);
+      border-style: solid;
+      opacity: 0.8;
+    }
+    .dc-tl { top: 2px; left: 2px; border-width: 1px 0 0 1px; }
+    .dc-tr { top: 2px; right: 2px; border-width: 1px 1px 0 0; }
+    .dc-bl { bottom: 2px; left: 2px; border-width: 0 0 1px 1px; }
+    .dc-br { bottom: 2px; right: 2px; border-width: 0 1px 1px 0; }
+
+    .mizige-container {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 2px;
+    }
+
+    .mizige-box {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--chinese-red);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .mizige-box::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-top: 1px dashed var(--grid-line);
+      border-left: 1px dashed var(--grid-line);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .mizige-box::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(to top right, transparent calc(50% - 0.5px), var(--grid-line) 50%, transparent calc(50% + 0.5px)),
+        linear-gradient(to bottom right, transparent calc(50% - 0.5px), var(--grid-line) 50%, transparent calc(50% + 0.5px));
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .hanzi-char {
+      position: relative;
+      z-index: 2;
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--deep-crimson);
+      line-height: 1;
+    }
+
+    .vocab-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 2px 4px;
+    }
+
+    .field-row {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #ebd9c5;
+      padding-bottom: 1px;
+    }
+
+    .field-label {
+      font-size: 0.55rem;
+      color: #9c6d3b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .field-value {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-black);
+      min-height: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pinyin-text {
+      color: var(--chinese-red);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .badge-icon {
+      position: absolute;
+      right: 4px;
+      top: 4px;
+      font-size: 0.85rem;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    /* Format Cetakan A4 */
+    @media print {
+      body {
+        background: transparent;
+        padding: 0;
+      }
+      .control-panel {
+        display: none !important;
+      }
+      .a4-page {
+        box-shadow: none;
+        margin: 0;
+        page-break-after: avoid;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="control-panel">
+    <div class="panel-header">
+      <h2>Sistem Kosa Kata Bahasa Cina (16 Slot Grid)</h2>
+      <div class="stats" id="counter">0 / 16 perkataan dimuatkan</div>
+    </div>
+    <form id="vocabForm" class="form-grid">
+      <input type="text" id="hanziInput" placeholder="Hanzi (cth: 汉语)" required maxlength="4" />
+      <input type="text" id="pinyinInput" placeholder="Pinyin (cth: hànyǔ)" required />
+      <input type="text" id="meaningInput" placeholder="Maksud (English / Malay)" required />
+      <div class="btn-group">
+        <button type="submit" class="btn-add">+ Masuk</button>
+        <button type="button" class="btn-print" onclick="window.print()">Cetak / PDF</button>
+        <button type="button" class="btn-clear" onclick="clearAllVocab()">Reset</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="a4-page">
+    <div class="outer-border">
+      <div class="corner-motif c-top-left"></div>
+      <div class="corner-motif c-top-right"></div>
+      <div class="corner-motif c-bottom-left"></div>
+      <div class="corner-motif c-bottom-right"></div>
+
+      <div class="vocab-grid" id="gridContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    const traditionalIcons = ['🏮', '🎋', '🪭', '🌸', '🐉', '🧧', '🍵', '🐼', '🏮', '🎋', '🪭', '🌸', '🐉', '🧧', '🍵', '🐼'];
+    const TOTAL_SLOTS = 16;
+    let vocabList = JSON.parse(localStorage.getItem('chineseVocabList')) || [];
+
+    function renderSheet() {
+      const container = document.getElementById('gridContainer');
+      container.innerHTML = '';
+
+      for (let i = 0; i < TOTAL_SLOTS; i++) {
+        const item = vocabList[i] || null;
+        const card = document.createElement('div');
+        card.className = 'vocab-card';
+
+        card.innerHTML = `
+          <div class="card-decor-corner dc-tl"></div>
+          <div class="card-decor-corner dc-tr"></div>
+          <div class="card-decor-corner dc-bl"></div>
+          <div class="card-decor-corner dc-br"></div>
+          <span class="badge-icon">${traditionalIcons[i]}</span>
+        `;
+
+        const mizigeContainer = document.createElement('div');
+        mizigeContainer.className = 'mizige-container';
+        const hanziChars = item ? item.hanzi.split('') : [];
+
+        for (let j = 0; j < 3; j++) {
+          const char = hanziChars[j] || '';
+          const box = document.createElement('div');
+          box.className = 'mizige-box';
+          if (char) {
+            box.innerHTML = `<span class="hanzi-char">${char}</span>`;
+          }
+          mizigeContainer.appendChild(box);
+        }
+
+        const details = document.createElement('div');
+        details.className = 'vocab-details';
+        details.innerHTML = `
+          <div class="field-row">
+            <span class="field-label">Pīnyīn</span>
+            <span class="field-value pinyin-text">${item ? item.pinyin : ''}</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Meaning</span>
+            <span class="field-value">${item ? item.meaning : ''}</span>
+          </div>
+        `;
+
+        card.appendChild(mizigeContainer);
+        card.appendChild(details);
+        container.appendChild(card);
+      }
+
+      document.getElementById('counter').innerText = `${vocabList.length} / ${TOTAL_SLOTS} perkataan dimuatkan`;
+    }
+
+    document.getElementById('vocabForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (vocabList.length >= TOTAL_SLOTS) {
+        alert('Grid telah penuh (16 perkataan). Klik "Reset" untuk set baharu.');
+        return;
+      }
+
+      const hanzi = document.getElementById('hanziInput').value.trim();
+      const pinyin = document.getElementById('pinyinInput').value.trim();
+      const meaning = document.getElementById('meaningInput').value.trim();
+
+      vocabList.push({ hanzi, pinyin, meaning });
+      localStorage.setItem('chineseVocabList', JSON.stringify(vocabList));
+
+      renderSheet();
+
+      document.getElementById('hanziInput').value = '';
+      document.getElementById('pinyinInput').value = '';
+      document.getElementById('meaningInput').value = '';
+      document.getElementById('hanziInput').focus();
+    });
+
+    function clearAllVocab() {
+      if (confirm('Padam semua rekod kosa kata?')) {
+        vocabList = [];
+        localStorage.removeItem('chineseVocabList');
+        renderSheet();
+      }
+    }
+
+    renderSheet();
+  </script>
+</body>
+</html>
