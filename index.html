@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
   
+  <!-- Library Ringan untuk Auto-Pinyin -->
+  <script src="https://cdn.jsdelivr.net/npm/pinyin-pro@3.29.5/dist/index.js"></script>
+
   <style>
     :root {
       --bg-cream: #fcf9f2;
@@ -34,7 +37,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px;
+      padding: 16px;
       min-height: 100vh;
     }
 
@@ -43,9 +46,9 @@
       width: 210mm;
       max-width: 100%;
       background: #252b33;
-      padding: 18px 20px;
+      padding: 16px;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       color: #fff;
     }
@@ -55,53 +58,67 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 14px;
+      gap: 10px;
     }
 
     .panel-header h2 {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 600;
       color: var(--gold);
     }
 
     .stats {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       background: rgba(255,255,255,0.1);
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 20px;
+      white-space: nowrap;
     }
 
     .form-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1.5fr 2fr auto;
+      display: flex;
+      flex-direction: column;
       gap: 10px;
     }
 
-    input {
-      padding: 10px 14px;
+    @media (min-width: 768px) {
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr 2fr auto;
+        gap: 10px;
+      }
+    }
+
+    .input-field {
+      padding: 12px 14px;
       border-radius: 8px;
       border: 1px solid #3d4653;
       background: #171b21;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 1rem;
       outline: none;
+      width: 100%;
     }
 
-    input:focus {
+    .input-field:focus {
       border-color: var(--gold);
     }
 
     .btn-group {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1.5fr 1.5fr 1fr;
       gap: 8px;
     }
 
     button {
-      padding: 10px 16px;
+      padding: 12px 14px;
       border-radius: 8px;
       font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
       border: none;
       transition: all 0.2s ease;
+      touch-action: manipulation;
     }
 
     .btn-add { background: var(--gold); color: #2b2321; }
@@ -111,9 +128,19 @@
     .btn-clear { background: transparent; color: #aaa; border: 1px solid #444; }
     .btn-clear:hover { background: #333; color: #fff; }
 
+    /* Pembungkus Pratonton untuk Skrin Telefon */
+    .preview-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+      padding-bottom: 24px;
+    }
+
     /* Halaman A4 */
     .a4-page {
       width: 210mm;
+      min-width: 210mm;
       height: 297mm;
       background-color: var(--bg-cream);
       padding: 8mm;
@@ -162,19 +189,18 @@
       background: var(--card-bg);
       border: 1.5px solid var(--chinese-red);
       border-radius: 6px;
-      padding: 10px 8px;
+      padding: 8px 6px;
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       box-shadow: 0 1px 3px rgba(139, 30, 30, 0.08);
       overflow: hidden;
       text-align: center;
     }
 
-    /* Bucu Hiasan Halus */
     .card-decor-corner {
       position: absolute;
       width: 6px;
@@ -191,8 +217,8 @@
 
     .badge-icon {
       position: absolute;
-      right: 6px;
-      top: 5px;
+      right: 5px;
+      top: 4px;
       font-size: 0.85rem;
       opacity: 0.8;
       pointer-events: none;
@@ -203,7 +229,7 @@
       display: flex;
       justify-content: center;
       gap: 4px;
-      margin-top: 4px;
+      margin-top: 2px;
       flex-wrap: nowrap;
     }
 
@@ -255,19 +281,18 @@
       line-height: 1;
     }
 
-    /* Bahagian Pinyin & Maksud di Tengah */
     .vocab-details {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 100%;
-      gap: 3px;
+      gap: 2px;
     }
 
     .pinyin-text {
       color: var(--pinyin-color);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 600;
       letter-spacing: 0.3px;
       min-height: 18px;
@@ -278,7 +303,7 @@
 
     .meaning-text {
       color: var(--meaning-color);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 500;
       line-height: 1.25;
       min-height: 16px;
@@ -290,7 +315,7 @@
       padding: 0 4px;
     }
 
-    /* Format Cetakan A4 */
+    /* Cetakan A4 */
     @media print {
       body {
         background: transparent;
@@ -298,6 +323,10 @@
       }
       .control-panel {
         display: none !important;
+      }
+      .preview-wrapper {
+        padding: 0;
+        overflow: visible;
       }
       .a4-page {
         box-shadow: none;
@@ -316,13 +345,41 @@
   <!-- Panel Borang Input -->
   <div class="control-panel">
     <div class="panel-header">
-      <h2>Sistem Kosa Kata Bahasa Cina </h2>
-      <div class="stats" id="counter">0 / 16 perkataan dimuatkan</div>
+      <h2>Sistem Kosa Kata Bahasa Cina</h2>
+      <div class="stats" id="counter">0 / 16 perkataan</div>
     </div>
     <form id="vocabForm" class="form-grid">
-      <input type="text" id="hanziInput" placeholder="Hanzi (cth: 习惯 / 学习)" required />
-      <input type="text" id="pinyinInput" placeholder="Pinyin (cth: xíguàn)" required />
-      <input type="text" id="meaningInput" placeholder="Maksud (English / Malay)" required />
+      <!-- Input Hanzi: lang="zh-CN" mengaktifkan keyboard Mandarin Gboard -->
+      <input 
+        type="text" 
+        id="hanziInput" 
+        class="input-field" 
+        placeholder="Hanzi (cth: 习惯)" 
+        lang="zh-CN" 
+        autocorrect="off" 
+        autocomplete="off" 
+        required 
+      />
+      <!-- Input Pinyin: diisi automatik, masih boleh disunting manual -->
+      <input 
+        type="text" 
+        id="pinyinInput" 
+        class="input-field" 
+        placeholder="Pinyin (Auto)" 
+        lang="zh-Latn" 
+        required 
+      />
+      <!-- Input Maksud: lang="en" mengaktifkan keyboard English Gboard -->
+      <input 
+        type="text" 
+        id="meaningInput" 
+        class="input-field" 
+        placeholder="Maksud (English / Malay)" 
+        lang="en" 
+        inputmode="text" 
+        autocapitalize="sentences" 
+        required 
+      />
       <div class="btn-group">
         <button type="submit" class="btn-add">+ Masuk</button>
         <button type="button" class="btn-print" onclick="window.print()">Cetak / PDF</button>
@@ -331,15 +388,17 @@
     </form>
   </div>
 
-  <!-- Halaman A4 Sedia Cetak -->
-  <div class="a4-page">
-    <div class="outer-border">
-      <div class="corner-motif c-top-left"></div>
-      <div class="corner-motif c-top-right"></div>
-      <div class="corner-motif c-bottom-left"></div>
-      <div class="corner-motif c-bottom-right"></div>
+  <!-- Pembungkus Pratonton A4 -->
+  <div class="preview-wrapper">
+    <div class="a4-page">
+      <div class="outer-border">
+        <div class="corner-motif c-top-left"></div>
+        <div class="corner-motif c-top-right"></div>
+        <div class="corner-motif c-bottom-left"></div>
+        <div class="corner-motif c-bottom-right"></div>
 
-      <div class="vocab-grid" id="gridContainer"></div>
+        <div class="vocab-grid" id="gridContainer"></div>
+      </div>
     </div>
   </div>
 
@@ -347,6 +406,21 @@
     const traditionalIcons = ['🏮', '🎋', '🪭', '🌸', '🐉', '🧧', '🍵', '🐼', '🏮', '🎋', '🪭', '🌸', '🐉', '🧧', '🍵', '🐼'];
     const TOTAL_SLOTS = 16;
     let vocabList = JSON.parse(localStorage.getItem('chineseVocabList')) || [];
+
+    const hanziInput = document.getElementById('hanziInput');
+    const pinyinInput = document.getElementById('pinyinInput');
+
+    // AUTO-PINYIN: Setiap kali Hanzi ditaip / dipilih daripada keyboard
+    hanziInput.addEventListener('input', function() {
+      const text = this.value.trim();
+      if (text && typeof pinyinPro !== 'undefined') {
+        // Tukar aksara Cina kepada pinyin lengkap dengan tanda nada
+        const generatedPinyin = pinyinPro.pinyin(text);
+        pinyinInput.value = generatedPinyin;
+      } else if (!text) {
+        pinyinInput.value = '';
+      }
+    });
 
     function renderSheet() {
       const container = document.getElementById('gridContainer');
@@ -378,7 +452,7 @@
             mizigeContainer.appendChild(box);
           });
         } else {
-          // Placeholder 2 kotak kosong jika belum ada data dimasukkan
+          // Placeholder 2 kotak kosong jika belum ada perkataan
           for (let j = 0; j < 2; j++) {
             const emptyBox = document.createElement('div');
             emptyBox.className = 'mizige-box';
@@ -386,7 +460,7 @@
           }
         }
 
-        // Bahagian Pinyin & Maksud (Tanpa label, berada di center)
+        // Bahagian Pinyin & Maksud
         const details = document.createElement('div');
         details.className = 'vocab-details';
         details.innerHTML = `
@@ -410,8 +484,8 @@
         return;
       }
 
-      const hanzi = document.getElementById('hanziInput').value.trim();
-      const pinyin = document.getElementById('pinyinInput').value.trim();
+      const hanzi = hanziInput.value.trim();
+      const pinyin = pinyinInput.value.trim();
       const meaning = document.getElementById('meaningInput').value.trim();
 
       vocabList.push({ hanzi, pinyin, meaning });
@@ -419,10 +493,10 @@
 
       renderSheet();
 
-      document.getElementById('hanziInput').value = '';
-      document.getElementById('pinyinInput').value = '';
+      hanziInput.value = '';
+      pinyinInput.value = '';
       document.getElementById('meaningInput').value = '';
-      document.getElementById('hanziInput').focus();
+      hanziInput.focus();
     });
 
     function clearAllVocab() {
@@ -433,7 +507,7 @@
       }
     }
 
-    // Paparkan semasa mula-mula halaman dimuatkan
+    // Paparkan semasa mula-mula muat halaman
     renderSheet();
   </script>
 </body>
